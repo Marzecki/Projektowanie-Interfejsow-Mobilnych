@@ -1,144 +1,115 @@
-import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
-import { StyleSheet, Text, View, SafeAreaView, Button, TextInput } from "react-native";
+import React,  { useEffect, useState }  from 'react';
+import { StyleSheet, Text, View, SafeAreaView, FlatList, ActivityIndicator} from 'react-native';
+import { IconButton, Colors } from 'react-native-paper';
 
 export default function App() {
-  const [gramsInput, setGramsInput] = useState("0.0")
-  const [calsInput, setCalsInput] = useState("0.0")
-  const [bigOutput, setBigOutput] = useState("0.0")
-  const [sumOutput, setSumOutput] = useState("0.0")
-  const [prevSum, setPrevSum] = useState("0.0")
-  const [limitInput, setLimitInput] = useState("0.0")
+  const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState([]);
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.big1}>
-        <Text style={styles.bigText}>{bigOutput}</Text>
+  useEffect(() => {
+    setIsLoading(true);
+
+    fetch('https://www.themealdb.com/api/json/v1/1/search.php?s=')
+      .then((response) => response.json())
+      .then((json) => setData(json.meals))
+      .catch((error) => console.error(error))
+      .finally(() => setIsLoading(false));
+  }, []);
+
+  renderSeparator = () => {
+    return (  
+      <View  
+          style={{  
+              height: 1,  
+              width: "100%",  
+              backgroundColor: "#000",  
+          }}  
+      />  
+    );  
+  };
+
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#5500dc" />
       </View>
-      <View style={styles.big2}>
-        <View style={styles.halfLeft}>
-          <Text style={styles.smallText}>grams:</Text>
-          <Text style={styles.smallerText}>Kcal/100g:</Text>
+    );
+  } else {
+    return (
+      <SafeAreaView>
+        <View style={styles.searchBar}>
+          {/* TODO Searchbar */}
         </View>
-        <View style={styles.halfRight}>
-          <TextInput style={styles.input} placeholder="0.0" onChangeText={(val) => setGramsInput(val)}/>
-          <TextInput style={styles.input} placeholder="0.0" onChangeText={(val) => setCalsInput(val)}/>
-        </View>
-      </View>
-      <View style={styles.small1}>
-        <Button title="CALCULATE" color="teal" onPress={() => setBigOutput(calculate(gramsInput, calsInput))}/>
-      </View>     
-      <View style={styles.small2}>
-          <Text style={ [ styles.smallText, [(sumOutput > limitInput) ? {color:"red"} : {color:"teal"}] ] }>Today: {sumOutput}</Text>
-      </View>
-      <View style={styles.small1}>
-      <View style={styles.halfLeft}>
-        <Button title="ADD" color="teal" onPress={() => {
-          setPrevSum(sumOutput); 
-          setSumOutput(addToSum(sumOutput, bigOutput));
-        }
-        }/>
-        </View>
-        <View style={styles.halfRight}>
-          <Button title="UNDO" color="teal" onPress={() => setSumOutput(prevSum)}/>
-        </View>
-      </View>
-      <View style={styles.small2}>
-        <View style={styles.halfLeft}>
-          <Text style={styles.smallerText}>Daily limit:</Text>
-        </View>
-        <View style={styles.halfRight}>
-        <TextInput style={styles.input} placeholder="0.0" onChangeText={(val) => setLimitInput(val)}/>
-        </View>
-      </View>
-    </SafeAreaView>
-  );
+        <FlatList
+          data={data.sort((a, b) => a.strMeal.localeCompare(b.strMeal))}
+          keyExtractor={(item) => item.idMeal}
+          renderItem={({ item }) => (
+            <View style={styles.listElement}>
+              <View style={styles.halfLeft}>
+                <Text numberOfLines={1} style={styles.listText}>{item.strMeal} ({item.strCategory})</Text>
+              </View>
+              <View style={styles.halfRight}>
+                <IconButton
+                  icon="heart"
+                  color="#931a25"
+                  size={20}
+                  onPress={() => console.log('Added to fav')}
+                />
+                <IconButton
+                  icon="heart-outline"
+                  color="#931a25"
+                  size={20}
+                  onPress={() => {
+                    console.log('Added to fav');
+                  }}
+                />
+              </View>
+            </View>  
+          )}
+          ItemSeparatorComponent={() => (
+            <View style={styles.separator}></View>
+          )}  
+        />
+      </SafeAreaView>
+    );
+  }
+
+ 
 }
-
-const calculate = (g, c) => {
-  var grams = +(g)
-  var cals = +(c)
-  var output = grams / 100 * cals
-  output = output.toFixed(2)
-  console.log(output)
-  return output
-}
-
-const addToSum = (s, b) => {
-  var sum = +(s) 
-  var big = +(b) 
-  return sum + big
-} 
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
   },
-  big1: {
+  listElement: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  big2: {
-    flex: 0.8,
-    backgroundColor: "#fff",
     flexDirection: "row",
-    justifyContent: "space-between",
-    marginLeft: 40,
-  },
-  big3: {
-    flex: 2,
-    backgroundColor: "#fff",
-    flexDirection: "row",
-  },
-  small1: {
-    flex: 0.5,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "row",
-  },
-  small2: {
-    flex: 0.5,
-    backgroundColor: "#fff",
-    flexDirection: "row",
+    height: 55,  
     justifyContent: "center",
   },
   halfLeft: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "flex-end",
+    flex: 4,
+    alignItems: "center",
     justifyContent: "center",
-    marginRight: 0,
+    marginLeft: 10,
   },
   halfRight: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "flex-start",
+    alignItems: "center",
     justifyContent: "center",
-    marginLeft: 20,
+    flexDirection: "row",
   },
-  bigText: {
-    fontSize: 80, 
-    color:"teal",
-    marginTop: 50,
+  listText: {
+    fontSize: 30,  
+    color: '#222831',
   },
-  smallText: {
-    fontSize: 40, 
-    color:"teal"
+  separator: {
+    height: 1,  
+    width: "100%",  
+    backgroundColor: "#931a25",
   },
-  smallerText: {
-    fontSize: 30, 
-    color:"teal",
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "teal",
-    color: "teal",
-    padding: 5,
-    width: 100,
-    marginTop: 10,
-  },
+  searchBar: {
+    height: 100,
+    backgroundColor: "#931a25"
+  }
 });
