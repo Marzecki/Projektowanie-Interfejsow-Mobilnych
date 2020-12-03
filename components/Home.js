@@ -2,10 +2,10 @@ import React,  { useEffect, useState }  from 'react';
 import { StyleSheet, Text, View, SafeAreaView, FlatList, ActivityIndicator} from 'react-native';
 import { IconButton, Colors } from 'react-native-paper';
 
-const Home = (props) => {
+const Home = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
-
+//
   useEffect(() => {
     setIsLoading(true);
 
@@ -16,7 +16,6 @@ const Home = (props) => {
       .finally(() => setIsLoading(false));
   }, []);
 
-  console.log(props.cos);
 
   if (isLoading) {
     return (
@@ -28,7 +27,6 @@ const Home = (props) => {
     return (
       <SafeAreaView>
         <View style={styles.searchBar}>
-            <Text>TheMealDB</Text>
           {/* TODO Searchbar */}
         </View>
         <FlatList
@@ -37,7 +35,7 @@ const Home = (props) => {
           renderItem={({ item }) => (
             <View style={styles.listElement}>
               <View style={styles.halfLeft}>
-                <Text numberOfLines={1} style={styles.listText}>{item.strMeal} ({item.strCategory})</Text>
+                <Text numberOfLines={1} style={styles.listText}  onPress={() => navigation.navigate('Meal', { meal: item})}>{item.strMeal} ({item.strCategory})</Text>
               </View>
               <View style={styles.halfRight}>
                 <IconButton
