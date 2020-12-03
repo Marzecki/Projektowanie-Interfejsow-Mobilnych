@@ -1,64 +1,37 @@
-import React from 'react';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import React,  { useState }  from 'react';
+import { SafeAreaView, StyleSheet, Text, View, Image, Dimensions  } from 'react-native';
 
-const Meal = () => {
-    const [value, onChangeText] = React.useState('0');
-    const [spinnerValue, onChangeSpinnerValue] = React.useState('0');
+const Meal = (props) => {
+    const {meal} = props.route.params;
+    console.log(meal);
+
+    const [imageSize, setImageSize] = useState({height: 0, width: 0});
+
+    Image.getSize(meal.strMealThumb, (width, height) => {
+      const screenWidth = Dimensions.get('window').width
+      const scaleFactor = width / screenWidth
+      const imageHeight = height / scaleFactor
+      setImageSize({width: screenWidth, height: imageHeight})
+    })
 
     return(
         <SafeAreaView style={styles.main}>
-            <Text style={styles.output}>Specka</Text>
+            <Text style={styles.title}>{meal.strMeal}</Text>
+            <Image style={{width: imageSize.width, height: imageSize.height}} source={{uri: meal.strMealThumb}}/>
         </SafeAreaView>
     );
 }
 
-export default Meal;
-
 const styles = StyleSheet.create({
-  main: {
-    height: 85,
-    flex: 1,
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start'
+  title: {
+    margin: 5,
+    padding: 5,
+    textAlign: "center",
+    fontSize: 20,
+    fontWeight: 600,
+    backgroundColor: "#fff",
+    borderRadius: 4,
   },
-  input: {
-    height: 40,
-    borderColor: '#5C6BC0',
-    borderBottomWidth: 2,
-    flex: 1
-  },
-  spinner: {
-    width: 80,
-    marginLeft: 10,
-    elevation: 2,
-  },
-  top: {
-      marginTop: 10,
-      marginLeft: 10,
-      marginRight: 10,
-      flexDirection: 'row'
-  },
-  bottom: {
-      marginTop: 20,
-      width: '100%',
-      alignItems: 'center',
-  },
-  output: {
-      width: '90%',
-      marginBottom: 13,
-      padding: 14,
-      backgroundColor: "#ddd",
-      textAlign: 'center',
-      fontSize: 18,
-      alignSelf: 'center',
-      borderRadius: 10,
-      shadowColor: "#000",
-      shadowOffset: {
-          width: 0,
-          height: 3,
-      },
-      shadowOpacity: 0.1,
-      shadowRadius: 4.65,
-      elevation: 6,
-  }
 });
+
+export default Meal;
