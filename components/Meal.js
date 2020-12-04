@@ -1,25 +1,11 @@
 import React,  { useState }  from 'react';
 import { SafeAreaView, StyleSheet, Text, View, Image, Dimensions, ScrollView, Linking } from 'react-native';
-import { IconButton, FAB } from 'react-native-paper';
-
-const TopBar = ({play, fullScreen}) => (
-  <View
-    style={{
-      alignSelf: 'center',
-      position: 'absolute',
-      top: 0,
-    }}>
-    {!fullScreen && <Text style={{color: '#FFF'}}> Custom Top bar</Text>}
-  </View>
-);
+import { FAB } from 'react-native-paper';
 
 
 const Meal = (props) => {
     const {meal} = props.route.params;
     const [imageSize, setImageSize] = useState({height: 0, width: 0});
-    const [fullScreen, setFullScreen] = useState(false);
-    
-
      
     Image.getSize(meal.strMealThumb, (width, height) => {
       const screenWidth = Dimensions.get('window').width
@@ -28,16 +14,11 @@ const Meal = (props) => {
       imageSize.width==0 && setImageSize({width: screenWidth, height: imageHeight})
     })
 
-    const onFullScreen = (fullScreen) => {
-        console.log('fullscreen ', fullScreen);
-        setFullScreen({fullScreen});
-    };
-
     const generateIngredients = () => {
       let ingredients = [];
       for (let i = 0; i < 20; i++) {
         if(meal[`strIngredient${i+1}`] != "" && meal[`strIngredient${i+1}`] != null) {
-        ingredients.push(<View style={{flexDirection: "row",}}>
+        ingredients.push(<View key={i} style={{flexDirection: "row",}}>
                             <Text>• {meal[`strIngredient${i+1}`]}:</Text>
                             <Text style={{color: "#212121"}}> {meal[`strMeasure${i+1}`]}</Text>
                         </View>);
