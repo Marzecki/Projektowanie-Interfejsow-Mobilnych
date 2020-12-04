@@ -1,6 +1,6 @@
 import React,  { useState }  from 'react';
-import { SafeAreaView, StyleSheet, Text, View, Image, Dimensions, ScrollView } from 'react-native';
-import { FAB } from 'react-native-paper';
+import { SafeAreaView, StyleSheet, Text, View, Image, Dimensions, ScrollView, Linking } from 'react-native';
+import { IconButton, FAB } from 'react-native-paper';
 
 const TopBar = ({play, fullScreen}) => (
   <View
@@ -17,8 +17,8 @@ const TopBar = ({play, fullScreen}) => (
 const Meal = (props) => {
     const {meal} = props.route.params;
     const [imageSize, setImageSize] = useState({height: 0, width: 0});
-     const [fullScreen, setFullScreen] = useState(false);
-    console.log(meal);
+    const [fullScreen, setFullScreen] = useState(false);
+    
 
      
     Image.getSize(meal.strMealThumb, (width, height) => {
@@ -49,7 +49,6 @@ const Meal = (props) => {
     return(
         <SafeAreaView style={styles.main}>
             <ScrollView>
-                
                 <Text style={styles.title}>{meal.strMeal}</Text>
                 <Image style={{width: imageSize.width, height: imageSize.height}} source={{uri: meal.strMealThumb}}/>
                 <View style={styles.tags}>
@@ -67,7 +66,14 @@ const Meal = (props) => {
               style={styles.fab}
               small
               icon="heart-outline"
-              onPress={() => console.log('Pressed')}
+              onPress={() => console.log('Like')}
+            />
+            <FAB
+              style={styles.fabYT}
+              small
+              icon="youtube"
+              disabled={meal.strYoutube != "" && meal.strYoutube != null ? false : true}
+              onPress={() => Linking.openURL(meal.strYoutube)}
             />
         </SafeAreaView>
     );
@@ -93,6 +99,7 @@ const styles = StyleSheet.create({
     flexDirection: "row"
   },
   tag: {
+    elevation: 10,
     paddingHorizontal: 8,
     paddingVertical: 4,
     marginHorizontal: 5,
@@ -109,7 +116,7 @@ const styles = StyleSheet.create({
   },
   description: {
     padding: 15,
-    marginBottom: 20,
+    marginBottom: 38,
     color: "#616161",
     backgroundColor: "#fff",
   },
@@ -135,6 +142,14 @@ const styles = StyleSheet.create({
     margin: 16,
     right: 0,
     bottom: 0,
+    backgroundColor: "#ec407a",
+  },
+  fabYT: {
+    position: 'absolute',
+    margin: 16,
+    right: 48,
+    bottom: 0,
+    backgroundColor: "#f44336",
   },
 });
 

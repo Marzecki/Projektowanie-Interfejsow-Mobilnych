@@ -15,7 +15,7 @@ const Home = ({ navigation }) => {
       .catch((error) => console.error(error))
       .finally(() => setIsLoading(false));
   }, []);
-
+  
   if (isLoading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
