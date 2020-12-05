@@ -6,6 +6,8 @@ const Home = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
 
+  const favText = useState("Favorites");
+
   useEffect(() => {
     setIsLoading(true);
 
@@ -16,47 +18,65 @@ const Home = ({ navigation }) => {
       .finally(() => setIsLoading(false));
   }, []);
 
+  const newdata=data.map((item) => {return { ...item, fav: 'f'}});
   if (isLoading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <ActivityIndicator size="large" color="#5500dc" />
       </View>
     );
-  } else {
+  } else { 
     return (
       <SafeAreaView>
-        
+
         <View style={styles.searchBar}>
-          {/* TODO Searchbar */}
+          <Text>To do</Text>
+        </View>
+        <View style={styles.favBar}>
+          <Text style={styles.favText} onPress={() => navigation.navigate('Favorites', {newdata: newdata})}>{favText}</Text>
         </View>
         <FlatList
-          data={data.sort((a, b) => a.strMeal.localeCompare(b.strMeal))}
+          data={newdata.sort((a, b) => a.strMeal.localeCompare(b.strMeal))}
+          //extraData={this.state}
           keyExtractor={(item) => item.idMeal}
+          
           renderItem={({ item }) => (
             <View style={styles.listElement}>
               <View style={styles.halfLeft}>
-                <Text numberOfLines={1} style={styles.listText}  onPress={() => navigation.navigate('Meal', { meal: item})}>{item.strMeal} ({item.strCategory})</Text>
+                <Text numberOfLines={1} style={styles.listText}  onPress={() => navigation.navigate('Meal', { meal: item})}>{item.strMeal} ({item.strCategory}) {item.fav}</Text>
               </View>
               <View style={styles.halfRight}>
-                {/* <IconButton
-                  icon="heart"
-                  color="#931a25"
-                  size={20}
-                  onPress={() => console.log('Added to fav')}
-                /> */}
+                <Text>{item.fav} </Text>
+                {item.fav == 't'? 
                 <IconButton
-                  icon="heart-outline"
-                  color="#931a25"
-                  size={20}
-                  onPress={() => console.log('Added to fav')}
-                />
+                icon="heart"
+                color="#931a25"
+                size={20}
+                onPress={() =>{
+                  item = { ...item, fav: 'f' }         
+                }}
+              />
+              : 
+              <IconButton
+              icon="heart-outline"
+              color="#931a25"
+              size={20}
+              onPress={() =>{                 
+                item = { ...item, fav: 't' }
+              }}
+
+              />}
+              
               </View>
-            </View>  
+            </View> 
+            
           )}
+
           ItemSeparatorComponent={() => (
             <View style={styles.separator}></View>
           )}  
         />
+
       </SafeAreaView>
     );
   }
@@ -85,6 +105,11 @@ const styles = StyleSheet.create({
     textAlign: "left",
     color: '#222831',
   },
+  favText: {
+    fontSize: 20,
+    textAlign: "center",
+    color: '#FFFFFF',
+  },
   separator: {
     height: 1,  
     width: "100%",  
@@ -92,6 +117,10 @@ const styles = StyleSheet.create({
   },
   searchBar: {
     height: 100,
+    backgroundColor: "#931a25"
+  },
+  favBar: {
+    height: 30,
     backgroundColor: "#931a25"
   },
 });

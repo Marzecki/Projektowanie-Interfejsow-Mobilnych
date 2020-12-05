@@ -1,6 +1,6 @@
 import React,  { useState }  from 'react';
 import { SafeAreaView, StyleSheet, Text, View, Image, Dimensions, ScrollView } from 'react-native';
-import { FAB } from 'react-native-paper';
+import { IconButton, Colors, FAB } from 'react-native-paper';
 
 const TopBar = ({play, fullScreen}) => (
   <View
@@ -49,8 +49,33 @@ const Meal = (props) => {
     return(
         <SafeAreaView style={styles.main}>
             <ScrollView>
-                
+
+            <View style={styles.halfLeft}>
+              <Text>Jeszcze nie dziala ten przycisk</Text>
+                {meal.fav == 't'? 
+                <IconButton
+                icon="heart"
+                color="#931a25"
+                size={50}
+                onPress={() =>{
+                  meal = { ...meal, fav: 'f' }             
+                }}
+              />
+              : 
+              <IconButton
+              icon="heart-outline"
+              color="#931a25"
+              size={50}
+              onPress={() =>{
+                { 
+                  meal = { ...meal, fav: 't' }
+              }}}
+              />}</View>
+
                 <Text style={styles.title}>{meal.strMeal}</Text>
+
+
+
                 <Image style={{width: imageSize.width, height: imageSize.height}} source={{uri: meal.strMealThumb}}/>
                 <View style={styles.tags}>
                     <Text style={[styles.tag, styles.placeTag]}>{meal.strArea}</Text>
@@ -62,13 +87,9 @@ const Meal = (props) => {
                     <Text style={styles.section}>Instruction:</Text>
                     <Text style={styles.instruction}>{meal.strInstructions}</Text>
                 </View>
+
             </ScrollView>
-            <FAB
-              style={styles.fab}
-              small
-              icon="heart-outline"
-              onPress={() => console.log('Pressed')}
-            />
+            
         </SafeAreaView>
     );
 }
@@ -86,6 +107,11 @@ const styles = StyleSheet.create({
     borderColor: "#e0e0e0",
     borderTopWidth: 1,
     borderBottomWidth: 1,
+  },
+  halfLeft: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: 5,
   },
   tags: {
     marginVertical: 7,
