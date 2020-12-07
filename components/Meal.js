@@ -4,8 +4,9 @@ import { FAB } from 'react-native-paper';
 
 
 const Meal = (props) => {
-    const {meal} = props.route.params;
+    const {meal, isFavourite, handleFavourites} = props.route.params;
     const [imageSize, setImageSize] = useState({height: 0, width: 0});
+    const [favourite, setFavourite] = useState(isFavourite(meal));
      
     Image.getSize(meal.strMealThumb, (width, height) => {
       const screenWidth = Dimensions.get('window').width
@@ -46,8 +47,11 @@ const Meal = (props) => {
             <FAB
               style={styles.fab}
               small
-              icon="heart-outline"
-              onPress={() => console.log('Like')}
+              icon={favourite ? "heart" : "heart-outline"}
+              onPress={() => {
+                handleFavourites(meal)
+                setFavourite(!favourite);
+              }}
             />
             <FAB
               style={styles.fabYT}
