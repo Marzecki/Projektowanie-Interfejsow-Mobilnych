@@ -1,10 +1,48 @@
 import React,  { useEffect, useState }  from 'react';
-import { StyleSheet, Text, View, SafeAreaView, FlatList, ActivityIndicator} from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, FlatList, ActivityIndicator, AsyncStorage } from 'react-native';
 import { IconButton, Colors, FAB } from 'react-native-paper';
 
 const Home = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
+  const [favourites, setFavourites] = useState([]);
+  const [favouritesLoading, setFavouritesLoading] = useState(false);
+  
+
+  const retrieveData = async () => {
+    try {
+      const favouritesString = await AsyncStorage.getItem('favourites');
+      setFavouritesLoading(true);
+      if (favouritesString !== null) {
+        const favouritesArray = JSON.parse(favouritesString);
+        setFavourites(favouritesArray);
+      }
+    } catch (error) {}
+  };
+
+  const handleFavourites = async (item) => {
+    const filtered = favourites.filter((value) => value == item.idMeal);
+    let newFavourites;
+    if (filtered.length == 0) {
+      newFavourites = [...favourites, item.idMeal];
+    }
+    else {
+      newFavourites = favourites.filter((value) => value != item.idMeal);
+    }
+    setFavourites(newFavourites);
+    try { await AsyncStorage.setItem('favourites',JSON.stringify(newFavourites));} 
+    catch (error) {}
+  }
+
+  const isFavourite = (item) => {
+    const filtered = favourites.filter((value) => value == item.idMeal);
+    if (filtered.length == 0) {
+      return false;
+    }
+    else {
+      return true;
+    }
+  }
 
   useEffect(() => {
     setIsLoading(true);
@@ -15,7 +53,10 @@ const Home = ({ navigation }) => {
       .catch((error) => console.error(error))
       .finally(() => setIsLoading(false));
   }, []);
-  
+
+
+  !favouritesLoading && retrieveData();
+
   if (isLoading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -38,17 +79,11 @@ const Home = ({ navigation }) => {
                 <Text numberOfLines={1} style={styles.listText}  onPress={() => navigation.navigate('Meal', { meal: item})}>{item.strMeal} ({item.strCategory})</Text>
               </View>
               <View style={styles.halfRight}>
-                {/* <IconButton
-                  icon="heart"
-                  color="#931a25"
-                  size={20}
-                  onPress={() => console.log('Added to fav')}
-                /> */}
                 <IconButton
-                  icon="heart-outline"
+                  icon={isFavourite(item) ? "heart" : "heart-outline"}
                   color="#931a25"
                   size={20}
-                  onPress={() => console.log('Added to fav')}
+                  onPress={() => handleFavourites(item)}
                 />
               </View>
             </View>  
