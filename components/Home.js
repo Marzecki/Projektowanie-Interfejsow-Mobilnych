@@ -66,9 +66,15 @@ const Home = ({ navigation }) => {
   } else {
     return (
       <SafeAreaView>
-        
         <View style={styles.searchBar}>
           {/* TODO Searchbar */}
+        </View>
+        <View style={styles.favBar}>
+          <Text style={styles.favText} onPress={() => {
+            const newData = data.filter((item) => isFavourite(item));
+            console.log(newData);
+            navigation.navigate('Favorites', {newData: newData})
+          }}>Favourites</Text>
         </View>
         <FlatList
           data={data.sort((a, b) => a.strMeal.localeCompare(b.strMeal))}
@@ -127,6 +133,10 @@ const styles = StyleSheet.create({
   },
   searchBar: {
     height: 100,
+    backgroundColor: "#931a25"
+  },
+  favBar: {
+    height: 30,
     backgroundColor: "#931a25"
   },
 });
