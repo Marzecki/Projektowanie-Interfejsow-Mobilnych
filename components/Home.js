@@ -56,7 +56,8 @@ const Home = ({ navigation }) => {
 
 
   !favouritesLoading && retrieveData();
-
+  console.log(favourites);
+      
   if (isLoading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -70,10 +71,10 @@ const Home = ({ navigation }) => {
           {/* TODO Searchbar */}
         </View>
         <View style={styles.favBar}>
-          <Text style={styles.favText} onPress={() => {
-            const newData = data.filter((item) => isFavourite(item));
-            console.log(newData);
-            navigation.navigate('Favorites', {newData: newData})
+        <Text style={styles.favText} onPress={() => {
+            //const newData = data.filter((item) => isFavourite(item));
+            //console.log(newData);
+            navigation.navigate('Favorites', {data: data})
           }}>Favourites</Text>
         </View>
         <FlatList
@@ -138,6 +139,11 @@ const styles = StyleSheet.create({
   favBar: {
     height: 30,
     backgroundColor: "#931a25"
+  },
+  favText: {
+    fontSize: 20,
+    textAlign: "center",
+    color: '#FFFFFF',
   },
 });
 

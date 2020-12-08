@@ -1,10 +1,9 @@
 import React,  { useEffect, useState }  from 'react';
-import { StyleSheet, Text, View, SafeAreaView, FlatList, ActivityIndicator} from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, FlatList, ActivityIndicator, AsyncStorage} from 'react-native';
 import { IconButton, Colors, FAB } from 'react-native-paper';
 
-const Favorites = (props) => {
-    const {newData} = props.route.params;
-    const [data, setData] = useState(newData);
+const Favorites = ({route, navigation}) => {
+  const {data} = route.params;
     const [favourites, setFavourites] = useState([]);
     const [favouritesLoading, setFavouritesLoading] = useState(false);
 
@@ -21,6 +20,16 @@ const Favorites = (props) => {
         } catch (error) {}
     };
 
+    const isFavourite = (item) => {
+      const filtered = favourites.filter((value) => value == item.idMeal);
+      if (filtered.length == 0) {
+        return false;
+      }
+      else {
+        return true;
+      }
+    }
+
     const handleFavourites = async (item) => {
         const filtered = favourites.filter((value) => value == item.idMeal);
         let newFavourites;
@@ -35,38 +44,38 @@ const Favorites = (props) => {
         catch (error) {}
       }
 
+      
+
       !favouritesLoading && retrieveData();
-      //console.log(favourites);
-      console.log(newData);
+      console.log(favourites);
+
+
       return (
         <SafeAreaView>
           <View style={styles.favBar}>
-            <Text style={styles.favText} onPress={() => setrrr(rrr+1)}>Favourites</Text>
+            <Text style={styles.favText} onPress={
+              () =>{ }}>Favourites</Text>
           </View>
           <FlatList
-            data={data}
-            keyExtractor={(item) => item.idMeal}
+          data={data.sort((a, b) => a.strMeal.localeCompare(b.strMeal))}
+          keyExtractor={(item) => item.idMeal}
+            
             renderItem={({ item }) => (
+              
               <View style={styles.listElement}>
                 <View style={styles.halfLeft}>
-                {item.fav == 't'? 
-                    <Text numberOfLines={1} style={styles.listText}  onPress={() => navigation.navigate('Meal', { meal: item})}>{item.strMeal} ({item.strCategory})</Text>
-                : 
-                null}
-                </View>
+                    {favourites.includes(item.idMeal) ?
+                    <Text numberOfLines={1} style={styles.listText}  onPress={() => navigation.navigate('Meal', { meal: item, isFavourite: isFavourite, handleFavourites: handleFavourites})}>{item.strMeal} ({item.strCategory})</Text>
+                : null}</View>
                 <View style={styles.halfRight}>
-                {item.fav == 't'? 
+                {favourites.includes(item.idMeal) ?
                 <IconButton
                 icon="heart"
                 color="#931a25"
                 size={20}
-                onPress={() => handleFavourites(item)}
-              /> 
-              : 
-              null
-              }
+                onPress={() => handleFavourites(item)}/>
 
-                </View>
+                : null}</View>
               </View>)}       
           
             ItemSeparatorComponent={() => (
