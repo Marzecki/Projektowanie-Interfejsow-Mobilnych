@@ -7,7 +7,8 @@ const Home = ({ navigation }) => {
   const [data, setData] = useState([]);
   const [favourites, setFavourites] = useState([]);
   const [favouritesLoading, setFavouritesLoading] = useState(false);
-  
+  const [search, setSearch] = useState('');
+  const [filteredDataSource, setFilteredDataSource] = useState([]);
 
   const retrieveData = async () => {
     try {
@@ -49,28 +50,19 @@ const Home = ({ navigation }) => {
 
     fetch('https://www.themealdb.com/api/json/v1/1/search.php?s=')
       .then((response) => response.json())
-      .then((json) => setData(json.meals))
+      .then((json) => {setData(json.meals);setFilteredDataSource(json.meals);})
       .catch((error) => console.error(error))
       .finally(() => setIsLoading(false));
   }, []);
 
-  const onChangeSearch = () => {
-
-  }
-  const searchQuery = "xD";
-
   !favouritesLoading && retrieveData();
-  console.log(favourites);
+  
 
   const searchFilterFunction = (text) => {
-    // Check if searched text is not blank
     if (text) {
-      // Inserted text is not blank
-      // Filter the masterDataSource
-      // Update FilteredDataSource
-      const newData = masterDataSource.filter(function (item) {
-        const itemData = item.title
-          ? item.title.toUpperCase()
+      const newData = data.filter(function (item) {
+        const itemData = item.strMeal
+          ? item.strMeal.toUpperCase()
           : ''.toUpperCase();
         const textData = text.toUpperCase();
         return itemData.indexOf(textData) > -1;
@@ -78,13 +70,13 @@ const Home = ({ navigation }) => {
       setFilteredDataSource(newData);
       setSearch(text);
     } else {
-      // Inserted text is blank
-      // Update FilteredDataSource with masterDataSource
-      setFilteredDataSource(masterDataSource);
+      setFilteredDataSource(data);
       setSearch(text);
     }
   };
-      
+
+  console.log(filteredDataSource);
+
   if (isLoading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -106,12 +98,12 @@ const Home = ({ navigation }) => {
             style={styles.searchBar}
             placeholder="Search"
             onChangeText={(text) => searchFilterFunction(text)}
-            value={searchQuery}
+            value={search}
           />
         </View>
         
         <FlatList
-          data={data.sort((a, b) => a.strMeal.localeCompare(b.strMeal))}
+          data={filteredDataSource.sort((a, b) => a.strMeal.localeCompare(b.strMeal))}
           keyExtractor={(item) => item.idMeal}
           renderItem={({ item }) => (
             <View style={styles.listElement}>
