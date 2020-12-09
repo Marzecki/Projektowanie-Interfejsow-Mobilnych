@@ -105,7 +105,6 @@ const Favorites = ({route, navigation}) => {
       alignItems: "center",
       justifyContent: "center",
       marginLeft: 5,
-      height: 20,
     },
     halfRight: {
       alignItems: "center",
