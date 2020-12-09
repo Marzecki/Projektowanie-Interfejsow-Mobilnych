@@ -5,6 +5,7 @@ import { IconButton, Colors, FAB } from 'react-native-paper';
 const Favorites = ({route, navigation}) => {
   const {data} = route.params;
     const [favourites, setFavourites] = useState([]);
+    const [mainData, setMainData] = useState(data);
     const [favouritesLoading, setFavouritesLoading] = useState(false);
 
     const [rrr, setrrr] = useState(1);
@@ -42,6 +43,9 @@ const Favorites = ({route, navigation}) => {
         setFavourites(newFavourites);
         try { await AsyncStorage.setItem('favourites',JSON.stringify(newFavourites));} 
         catch (error) {}
+
+        const filteredData = mainData.filter((value) => value.idMeal != item.idMeal);
+        setMainData(filteredData);
       }
 
       
@@ -57,7 +61,7 @@ const Favorites = ({route, navigation}) => {
               () =>{ }}>Favourites</Text>
           </View>
           <FlatList
-          data={data.sort((a, b) => a.strMeal.localeCompare(b.strMeal))}
+          data={mainData}
           keyExtractor={(item) => item.idMeal}
             
             renderItem={({ item }) => (

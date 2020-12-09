@@ -72,9 +72,8 @@ const Home = ({ navigation }) => {
         </View>
         <View style={styles.favBar}>
         <Text style={styles.favText} onPress={() => {
-            //const newData = data.filter((item) => isFavourite(item));
-            //console.log(newData);
-            navigation.navigate('Favorites', {data: data})
+            const newData = data.filter((item) => isFavourite(item));
+            navigation.navigate('Favorites', {data: newData})
           }}>Favourites</Text>
         </View>
         <FlatList
