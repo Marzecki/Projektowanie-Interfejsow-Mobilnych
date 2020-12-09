@@ -1,6 +1,6 @@
 import React,  { useEffect, useState }  from 'react';
 import { StyleSheet, Text, View, SafeAreaView, FlatList, ActivityIndicator, AsyncStorage } from 'react-native';
-import { IconButton, Colors, FAB } from 'react-native-paper';
+import { IconButton, Searchbar } from 'react-native-paper';
 
 const Home = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -54,9 +54,36 @@ const Home = ({ navigation }) => {
       .finally(() => setIsLoading(false));
   }, []);
 
+  const onChangeSearch = () => {
+
+  }
+  const searchQuery = "xD";
 
   !favouritesLoading && retrieveData();
   console.log(favourites);
+
+  const searchFilterFunction = (text) => {
+    // Check if searched text is not blank
+    if (text) {
+      // Inserted text is not blank
+      // Filter the masterDataSource
+      // Update FilteredDataSource
+      const newData = masterDataSource.filter(function (item) {
+        const itemData = item.title
+          ? item.title.toUpperCase()
+          : ''.toUpperCase();
+        const textData = text.toUpperCase();
+        return itemData.indexOf(textData) > -1;
+      });
+      setFilteredDataSource(newData);
+      setSearch(text);
+    } else {
+      // Inserted text is blank
+      // Update FilteredDataSource with masterDataSource
+      setFilteredDataSource(masterDataSource);
+      setSearch(text);
+    }
+  };
       
   if (isLoading) {
     return (
@@ -67,15 +94,22 @@ const Home = ({ navigation }) => {
   } else {
     return (
       <SafeAreaView>
-        <View style={styles.searchBar}>
-          {/* TODO Searchbar */}
-        </View>
         <View style={styles.favBar}>
         <Text style={styles.favText} onPress={() => {
             const newData = data.filter((item) => isFavourite(item));
             navigation.navigate('Favorites', {data: newData})
           }}>Favourites</Text>
         </View>
+
+        <View style={styles.searchBarView}>
+          <Searchbar
+            style={styles.searchBar}
+            placeholder="Search"
+            onChangeText={(text) => searchFilterFunction(text)}
+            value={searchQuery}
+          />
+        </View>
+        
         <FlatList
           data={data.sort((a, b) => a.strMeal.localeCompare(b.strMeal))}
           keyExtractor={(item) => item.idMeal}
@@ -132,17 +166,24 @@ const styles = StyleSheet.create({
     backgroundColor: "#9e9e9e",
   },
   searchBar: {
-    height: 100,
-    backgroundColor: "#931a25"
+    height: 50,
+    margin: 5,
+    backgroundColor: "#EF9A9A",
+    elevation: 5,
   },
   favBar: {
-    height: 30,
-    backgroundColor: "#931a25"
+    margin: 5,
+    height: 50,
+    elevation: 5,
+    backgroundColor: "#D50000",
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   favText: {
     fontSize: 20,
     textAlign: "center",
-    color: '#FFFFFF',
+    color: '#fff',
   },
 });
 

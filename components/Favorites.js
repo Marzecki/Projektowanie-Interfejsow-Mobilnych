@@ -132,7 +132,7 @@ const Favorites = ({route, navigation}) => {
     },
     favBar: {
       height: 30,
-      backgroundColor: "#931a25"
+      backgroundColor: "#D50000"
     },
   });
   
