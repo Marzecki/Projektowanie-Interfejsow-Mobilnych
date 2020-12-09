@@ -40,8 +40,11 @@ const Favorites = ({route, navigation}) => {
         else {
           newFavourites = favourites.filter((value) => value != item.idMeal);
         }
-        setFavourites(newFavourites);
-        try { await AsyncStorage.setItem('favourites',JSON.stringify(newFavourites));} 
+        
+        try { 
+          await AsyncStorage.setItem('favourites',JSON.stringify(newFavourites));
+          setFavourites(newFavourites);
+        } 
         catch (error) {}
 
         const filteredData = mainData.filter((value) => value.idMeal != item.idMeal);
@@ -57,8 +60,7 @@ const Favorites = ({route, navigation}) => {
       return (
         <SafeAreaView>
           <View style={styles.favBar}>
-            <Text style={styles.favText} onPress={
-              () =>{ }}>Favourites</Text>
+            <Text></Text>
           </View>
           <FlatList
           data={mainData}
