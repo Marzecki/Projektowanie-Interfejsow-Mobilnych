@@ -54,7 +54,7 @@ const Favorites = ({route, navigation}) => {
       
 
       !favouritesLoading && retrieveData();
-      console.log(favourites);
+      
 
 
       return (
@@ -64,24 +64,23 @@ const Favorites = ({route, navigation}) => {
           </View>
           <FlatList
           data={mainData}
-          keyExtractor={(item) => item.idMeal}
-            
+          keyExtractor={(item) => item.idMeal}       
             renderItem={({ item }) => (
-              
               <View style={styles.listElement}>
                 <View style={styles.halfLeft}>
-                    {favourites.includes(item.idMeal) ?
-                    <Text numberOfLines={1} style={styles.listText}  onPress={() => navigation.navigate('Meal', { meal: item, isFavourite: isFavourite, handleFavourites: handleFavourites})}>{item.strMeal} ({item.strCategory})</Text>
-                : null}</View>
+                  <Text numberOfLines={1} style={styles.listText}  onPress={() => {
+                    navigation.navigate('Meal', { meal: item, isFavourite: isFavourite, handleFavourites: handleFavourites})
+                    }}>
+                    {item.strMeal} ({item.strCategory})
+                  </Text>
+                </View>
                 <View style={styles.halfRight}>
-                {favourites.includes(item.idMeal) ?
-                <IconButton
-                icon="heart"
-                color="#931a25"
-                size={20}
-                onPress={() => handleFavourites(item)}/>
-
-                : null}</View>
+                  <IconButton
+                  icon="heart"
+                  color="#931a25"
+                  size={20}
+                  onPress={() => handleFavourites(item)}/>
+                </View>
               </View>)}       
           
             ItemSeparatorComponent={() => (
@@ -91,8 +90,7 @@ const Favorites = ({route, navigation}) => {
         </SafeAreaView>
       );
     }
-  
-  
+
   const styles = StyleSheet.create({
     container: {
     },

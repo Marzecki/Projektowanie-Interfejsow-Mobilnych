@@ -75,7 +75,7 @@ const Home = ({ navigation }) => {
     }
   };
 
-  console.log(filteredDataSource);
+  console.log(favourites);
 
   if (isLoading) {
     return (
@@ -108,7 +108,12 @@ const Home = ({ navigation }) => {
           renderItem={({ item }) => (
             <View style={styles.listElement}>
               <View style={styles.halfLeft}>
-                <Text numberOfLines={1} style={styles.listText}  onPress={() => navigation.navigate('Meal', { meal: item, isFavourite: isFavourite, handleFavourites: handleFavourites})}>{item.strMeal} ({item.strCategory})</Text>
+                <Text numberOfLines={1} style={styles.listText}  onPress={() => {
+                  //setFavouritesLoading(false);
+                  navigation.navigate('Meal', { meal: item, isFavourite: isFavourite, handleFavourites: handleFavourites})}
+                  }>
+                {item.strMeal} ({item.strCategory})
+                </Text>
               </View>
               <View style={styles.halfRight}>
                 <IconButton
